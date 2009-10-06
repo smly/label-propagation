@@ -79,6 +79,7 @@ int main (int argc, char** argv)
         cout << "ERROR: " << e.what() << endl;
     }
     assert(trans_mat.size() == labels.size());
+
     const int N = trans_mat.size(); // 1 .. N
     int labeled_cnt = 0;
     vector<int> unlabeled;
@@ -91,23 +92,33 @@ int main (int argc, char** argv)
     }
     const int L = labeled_cnt;
     const int U = N-L;
+    vector<int> labeled_nodes(L), unlabeled_nodes(U); // collection of node index
+    for (int i=0; i<N; i++) {
+        if (labels[i] < 0) {
+            unlabeled_nodes.pb(i);
+        } else {
+            labeled_nodes.pb(i);
+        }
+    }
     assert(U == static_cast<int>(unlabeled.size()));
     assert(L > 0);
     assert(U > 0);
     LOG(INFO) << "# of nodes: " << N << endl;
     LOG(INFO) << "# of labeled nodes: " << L << endl;
     LOG(INFO) << "# of unlabeled nodes: " << U << endl;
+//    exit(1);
 
     graph::Matrix norm_trans_uu(U, graph::Array());
     graph::Matrix norm_trans_ul(U, graph::Array()); // start from L
     load_submatrix(norm_trans_mat, norm_trans_uu, norm_trans_ul, U, L);
+/*
     LOG(INFO) << "- show_normalized_trans: UU";
     show_normalized_trans_u(norm_trans_uu, L);
     LOG(INFO) << "- show_normalized_trans: UL";
     show_normalized_trans_u(norm_trans_ul, L);
     LOG(INFO) << "- show_normalized_trans: MAT";
     show_normalized_trans(norm_trans_mat);
-
+*/
     const int C = max_lab;
     graph::LabelMatrix y_u(C, vector<double>(U, 0.0));
     graph::LabelMatrix y_l(C, vector<double>(L, 0.0));
@@ -121,7 +132,7 @@ int main (int argc, char** argv)
         }
     }
 
-    showLabels(y_l, y_u, L, U, C);
+//    showLabels(y_l, y_u, L, U, C);
     const int max_iteration = FLAGS_iteration;
     int iteration;
     for (iteration = 0; iteration<max_iteration; iteration++) {

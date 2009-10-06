@@ -18,8 +18,7 @@ namespace graph {
   } Edge;
   typedef std::vector<Edge> Array;
   typedef std::vector<Array> Matrix;
-  typedef int LabelId;
-  typedef std::vector<LabelId> Labels;
+  typedef std::vector<int> Labels;
   typedef std::vector<std::vector<double> > LabelMatrix;
 
   void normalize (Matrix& trans_mat, Matrix& norm_trans_mat);
