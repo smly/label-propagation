@@ -56,7 +56,7 @@ int load_lab (Labels& lab, const std::string& input)
         if (line == "?") {
             lab.push_back(-1);
         } else {
-            graph::LabelId id = stoi(line);
+            const int id = stoi(line);
             max_label = std::max(id, max_label);
             lab.push_back(id);
         }
@@ -127,19 +127,27 @@ void show_normalized_trans_u(const Matrix& norm, const int L)
     }
 }
 void load_submatrix(const Matrix& mat, Matrix& mat_uu, Matrix& mat_ul,
-                    const int U, const int L) {
-    const int N = U + L;
-    for (int i=L; i<N; i++) {
+                    const int U, const int L,
+                    const std::vector<int> unlabeled_nodes,
+                    const std::vector<int> labeled_nodes,
+                    const Labels& lab) {
+    foreach (const int i, unlabeled_nodes) {
         const int edges_sz = mat[i].size();
         for (int j=0; j<edges_sz; j++) {
-            const int src = mat[i][j].node;
-            if (src <= L) {
-                mat_ul[i-L].push_back( mat[i][j] );
+            const int src_index = mat[i][j].node - 1;
+            if (lab[src_index] >= 0) {
+                mat_ul[i].push_back( mat[i][j] );
             } else {
-                mat_uu[i-L].push_back( mat[i][j] );
+                mat_uu[i].push_back( mat[i][j] );
             }
         }
     }
 }
 
 }// end of namespace graph
+
+/*
+  mat_uu[labeled_nodes のインデックス番号][hoge] でよい?
+  labels における index は labeled_noeds 経由で引ける.
+  現状では first argument には [0~U-1].
+ */

@@ -26,7 +26,10 @@ namespace graph {
   void load_mat(Matrix& trans_mat, Matrix& norm_trans_mat, const std::string& input);
   int  load_lab(Labels& lab, const std::string& intpu);
   void load_submatrix(const Matrix& mat, Matrix& mat_uu, Matrix& mat_ul,
-                      const int U, const int L);
+                      const int U, const int L,
+                      const std::vector<int> unlabeled_nodes,
+                      const std::vector<int> labeled_nodes,
+                      const Labels& lab);
   void show_normalized_trans(const Matrix& norm);
   void show_normalized_trans_u(const Matrix& norm, const int L);
 }
