@@ -20,14 +20,16 @@ namespace graph {
   typedef std::vector<Array> Matrix;
   typedef int LabelId;
   typedef std::vector<LabelId> Labels;
+  typedef std::vector<std::vector<double> > LabelMatrix;
 
   void normalize (Matrix& trans_mat, Matrix& norm_trans_mat);
   void row_normalize (Matrix& mat);
   void load_mat(Matrix& trans_mat, Matrix& norm_trans_mat, const std::string& input);
-  void load_lab(Labels& lab, const std::string& intpu);
+  int  load_lab(Labels& lab, const std::string& intpu);
   void load_submatrix(const Matrix& mat, Matrix& mat_uu, Matrix& mat_ul,
                       const int U, const int L);
   void show_normalized_trans(const Matrix& norm);
+  void show_normalized_trans_u(const Matrix& norm, const int L);
 }
 
 #endif

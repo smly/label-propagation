@@ -35,7 +35,7 @@ void normalize (Matrix& trans_mat, Matrix& norm_trans_mat)
     }
     LOG(INFO) << "end to normalize input matrix" << std::endl;
 }
-void load_lab (Labels& lab, const std::string& input)
+int load_lab (Labels& lab, const std::string& input)
 {
     namespace fs = boost::filesystem;
     using boost::split;
@@ -49,6 +49,7 @@ void load_lab (Labels& lab, const std::string& input)
     }
     fs::ifstream ifs(input);
     lab = Labels();
+    int max_label = 0;
     while (! ifs.eof()) {
         std::string line;
         std::getline(ifs, line);
@@ -56,11 +57,14 @@ void load_lab (Labels& lab, const std::string& input)
             lab.push_back(-1);
         } else {
             graph::LabelId id = stoi(line);
+            max_label = std::max(id, max_label);
             lab.push_back(id);
         }
         ifs.peek();
     }
     LOG(INFO) << "end load_lab" << input << std::endl;
+
+    return max_label;
 }
 void load_mat (Matrix& trans_mat, Matrix& norm_trans_mat, const std::string& input)
 {
@@ -111,16 +115,28 @@ void show_normalized_trans(const Matrix& norm)
         }
     }
 }
+void show_normalized_trans_u(const Matrix& norm, const int L)
+{
+    const int N = norm.size();
+    for (int i=0; i<N; i++) {
+        LOG(INFO) << "dst.id: " << i+L+1 << std::endl;
+        for (unsigned int j=0; j<norm[i].size(); j++) {
+            LOG(INFO) << "-> src.id: " << norm[i][j].node
+                      <<" (" << norm[i][j].weight << ")" << std::endl;
+        }
+    }
+}
 void load_submatrix(const Matrix& mat, Matrix& mat_uu, Matrix& mat_ul,
                     const int U, const int L) {
     const int N = U + L;
     for (int i=L; i<N; i++) {
         const int edges_sz = mat[i].size();
         for (int j=0; j<edges_sz; j++) {
-            if (mat[i][j].node <= L) {
-                mat_ul[i].push_back( mat[i][j] );
+            const int src = mat[i][j].node;
+            if (src <= L) {
+                mat_ul[i-L].push_back( mat[i][j] );
             } else {
-                mat_uu[i].push_back( mat[i][j] );
+                mat_uu[i-L].push_back( mat[i][j] );
             }
         }
     }
