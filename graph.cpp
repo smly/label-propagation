@@ -145,9 +145,3 @@ void load_submatrix(const Matrix& mat, Matrix& mat_uu, Matrix& mat_ul,
 }
 
 }// end of namespace graph
-
-/*
-  mat_uu[labeled_nodes のインデックス番号][hoge] でよい?
-  labels における index は labeled_noeds 経由で引ける.
-  現状では first argument には [0~U-1].
- */

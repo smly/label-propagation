@@ -23,6 +23,32 @@ void showLabels(const graph::LabelMatrix& y_l, const graph::LabelMatrix& y_u,
 {
     const int N = L + U;
     for (int i=0; i<N; i++) {
+        int argmax = 0;
+        double argmax_val = -1.0;
+
+        for (int c=0; c<C; c++) {
+            // argmax
+            if (lab[i] >= 0) {
+                for (int c=0; c<C; c++) {
+                    if (argmax_val < y_l[c][i]) {
+                        argmax_val = y_l[c][i];
+                        argmax = c;
+                    }
+                }
+            } else {
+                for (int c=0; c<C; c++) {
+                    if (argmax_val < y_u[c][i]) {
+                        argmax_val = y_u[c][i];
+                        argmax = c;
+                    }
+                }
+            }
+        }
+
+        cout << argmax << endl;
+    }
+    exit(0);
+    for (int i=0; i<N; i++) {
         if (lab[i] >= 0) {
             // labeled
             cout << "L: ";
@@ -41,24 +67,6 @@ void showLabels(const graph::LabelMatrix& y_l, const graph::LabelMatrix& y_u,
             cout << endl;
         }
     }
-/*
-    for (int i=0; i<L; i++) {
-        cout << "L: ";
-        for (int c=0; c<C; c++) {
-            if (c!=0) cout << ",";
-            cout << y_l[c][i];
-        }
-        cout << endl;
-    }
-    for (int i=0; i<U; i++) {
-        cout << "U: ";
-        for (int c=0; c<C; c++) {
-            if (c!=0) cout << ",";
-            cout << y_u[c][i];
-        }
-        cout << endl;
-    }
-*/
 }
 int main (int argc, char** argv)
 {
