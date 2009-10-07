@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <ctime>
 #include <boost/random.hpp>
@@ -14,7 +15,10 @@ DEFINE_string(inputMatrix, "", "input graph file");
 DEFINE_string(inputLabels, "", "input label file");
 DEFINE_int32(iteration, 1000, "iteration maximum");
 DEFINE_double(eps, 1.0e-9, "error precision");
+DEFINE_bool(showWeight, false, "show label weight matrix");
+DEFINE_int32(precision, 10, "precision");
 using namespace std;
+
 void showLabels(const graph::LabelMatrix& y_l, const graph::LabelMatrix& y_u,
                 int L, int U, int C,
                 const vector<int>& labeled_nodes,
@@ -22,49 +26,53 @@ void showLabels(const graph::LabelMatrix& y_l, const graph::LabelMatrix& y_u,
                 const graph::Labels& lab)
 {
     const int N = L + U;
-    for (int i=0; i<N; i++) {
-        int argmax = 0;
-        double argmax_val = -1.0;
-
-        for (int c=0; c<C; c++) {
-            // argmax
+    cout.setf(std::ios::fixed, std::ios::floatfield);
+    cout.precision(FLAGS_precision);
+    if (FLAGS_showWeight) {
+        for (int i=0; i<N; i++) {
             if (lab[i] >= 0) {
+                // labeled
+                cout << "L: ";
                 for (int c=0; c<C; c++) {
-                    if (argmax_val < y_l[c][i]) {
-                        argmax_val = y_l[c][i];
-                        argmax = c;
-                    }
+                    if (c!=0) cout << " ";
+                    cout << y_l[c][i];
                 }
+                cout << endl;
             } else {
+                // unlabeled
+                cout << "U: ";
                 for (int c=0; c<C; c++) {
-                    if (argmax_val < y_u[c][i]) {
-                        argmax_val = y_u[c][i];
-                        argmax = c;
-                    }
+                    if (c!=0) cout << " ";
+                    cout << y_u[c][i];
                 }
+                cout << endl;
             }
         }
+    } else {
+        for (int i=0; i<N; i++) {
+            int argmax = 0;
+            double argmax_val = -1.0;
 
-        cout << argmax << endl;
-    }
-    exit(0);
-    for (int i=0; i<N; i++) {
-        if (lab[i] >= 0) {
-            // labeled
-            cout << "L: ";
             for (int c=0; c<C; c++) {
-                if (c!=0) cout << ",";
-                cout << y_l[c][i];
+                // argmax
+                if (lab[i] >= 0) {
+                    for (int c=0; c<C; c++) {
+                        if (argmax_val < y_l[c][i]) {
+                            argmax_val = y_l[c][i];
+                            argmax = c;
+                        }
+                    }
+                } else {
+                    for (int c=0; c<C; c++) {
+                        if (argmax_val < y_u[c][i]) {
+                            argmax_val = y_u[c][i];
+                            argmax = c;
+                        }
+                    }
+                }
             }
-            cout << endl;
-        } else {
-            // unlabeled
-            cout << "U: ";
-            for (int c=0; c<C; c++) {
-                if (c!=0) cout << ",";
-                cout << y_u[c][i];
-            }
-            cout << endl;
+
+            cout << argmax+1 << endl;
         }
     }
 }
