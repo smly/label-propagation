@@ -23,6 +23,7 @@ void showLabels(const graph::LabelMatrix& y_l, const graph::LabelMatrix& y_u,
                 int L, int U, int C,
                 const vector<int>& labeled_nodes,
                 const vector<int>& unlabeled_nodes,
+                const vector<int>& node_index_v,
                 const graph::Labels& lab)
 {
     const int N = L + U;
@@ -31,19 +32,17 @@ void showLabels(const graph::LabelMatrix& y_l, const graph::LabelMatrix& y_u,
     if (FLAGS_showWeight) {
         for (int i=0; i<N; i++) {
             if (lab[i] >= 0) {
-                // labeled
                 cout << "L: ";
                 for (int c=0; c<C; c++) {
                     if (c!=0) cout << " ";
-                    cout << y_l[c][i];
+                    cout << y_l[c][node_index_v[i]];
                 }
                 cout << endl;
             } else {
-                // unlabeled
                 cout << "U: ";
                 for (int c=0; c<C; c++) {
                     if (c!=0) cout << " ";
-                    cout << y_u[c][i];
+                    cout << y_u[c][node_index_v[i]];
                 }
                 cout << endl;
             }
@@ -54,18 +53,18 @@ void showLabels(const graph::LabelMatrix& y_l, const graph::LabelMatrix& y_u,
             double argmax_val = -1.0;
 
             for (int c=0; c<C; c++) {
-                // argmax
+                // get argmax
                 if (lab[i] >= 0) {
                     for (int c=0; c<C; c++) {
-                        if (argmax_val < y_l[c][i]) {
-                            argmax_val = y_l[c][i];
+                        if (argmax_val < y_l[c][node_index_v[i]]) {
+                            argmax_val = y_l[c][node_index_v[i]];
                             argmax = c;
                         }
                     }
                 } else {
                     for (int c=0; c<C; c++) {
-                        if (argmax_val < y_u[c][i]) {
-                            argmax_val = y_u[c][i];
+                        if (argmax_val < y_u[c][node_index_v[i]]) {
+                            argmax_val = y_u[c][node_index_v[i]];
                             argmax = c;
                         }
                     }
@@ -106,14 +105,20 @@ int main (int argc, char** argv)
     }
     const int L = labeled_cnt;
     const int U = N-L;
-    vector<int> labeled_nodes, unlabeled_nodes; // collection of node index
+    vector<int> labeled_nodes(L), unlabeled_nodes(U); // collection of node index
+    vector<int> node_index_v(N);
+    int l = 0, u = 0;
     for (int i=0; i<N; i++) {
         if (labels[i] < 0) {
-            unlabeled_nodes.pb(i);
+            node_index_v[i] = u;
+            unlabeled_nodes[u++] = i;
         } else {
-            labeled_nodes.pb(i);
+            node_index_v[i] = l;
+            labeled_nodes[l++] = i;
         }
     }
+    assert(l==L);
+    assert(u==U);
     assert(static_cast<int>(unlabeled_nodes.size()) == U);
     assert(static_cast<int>(labeled_nodes.size()) == L);
     assert(U == static_cast<int>(unlabeled.size()));
@@ -123,69 +128,62 @@ int main (int argc, char** argv)
     LOG(INFO) << "# of labeled nodes: " << L << endl;
     LOG(INFO) << "# of unlabeled nodes: " << U << endl;
 
-    graph::Matrix norm_trans_uu(N, graph::Array());
-    graph::Matrix norm_trans_ul(N, graph::Array()); // start from L
+    graph::Matrix norm_trans_uu(U, graph::Array());
+    graph::Matrix norm_trans_ul(U, graph::Array());
     load_submatrix(norm_trans_mat, norm_trans_uu, norm_trans_ul,
                    U, L, unlabeled_nodes, labeled_nodes,
                    labels);
-/*
-    LOG(INFO) << "- show_normalized_trans: UU";
-    show_normalized_trans_u(norm_trans_uu, 0);
-    LOG(INFO) << "- show_normalized_trans: UL";
-    show_normalized_trans_u(norm_trans_ul, 0);
-    LOG(INFO) << "- show_normalized_trans: MAT";
-    show_normalized_trans(norm_trans_mat);
-*/
+
     const int C = max_lab;
-    graph::LabelMatrix y_u(C, vector<double>(N, 0.0));
-    graph::LabelMatrix y_l(C, vector<double>(N, 0.0));
-    foreach (const int i, labeled_nodes) {
-        assert(labels[i] != 0);
-        if (labels[i] > 0) {
-            // labeled
-            const int label_index = labels[i] - 1;
+    graph::LabelMatrix y_u(C, vector<double>(U, 0.0));
+    graph::LabelMatrix y_l(C, vector<double>(L, 0.0));
+
+    for (unsigned int i=0; i<labeled_nodes.size(); i++) {
+        const int node_index = labeled_nodes[i];
+        assert(labels[node_index] != 0);
+        if (labels[node_index] > 0) {
+            const int label_index = labels[node_index] - 1;
             y_l[label_index][i] = 1.0;
         }
     }
-//    showLabels(y_l, y_u, L, U, C, labeled_nodes, unlabeled_nodes, labels);
+
     const int max_iteration = FLAGS_iteration;
     int iteration;
     for (iteration = 0; iteration<max_iteration; iteration++) {
-        vector<vector<double> > y_ret(C, vector<double>(N, 0.0)); // y_u'
-        // calc y_u' = T_ul y_l
-        // calc y_u' = T_uu y_u
+        vector<vector<double> > y_ret(C, vector<double>(U, 0.0)); // Y'_u
         double err = 0.0;
-        foreach (const int i, unlabeled_nodes) {
-            const int edge_sz = norm_trans_ul[i].size();
+        // calc Y'_u = \overline{T}_{ul} Y_l
+        for (unsigned int i=0; i<unlabeled_nodes.size(); i++) {
             for (int c=0; c<C; c++) {
+                const graph::Array arry = norm_trans_ul[i];
+                const int edge_sz = arry.size();
                 for (int j=0; j<edge_sz; j++) {
-                    const double w = norm_trans_ul[i][j].weight;
-                    const int src_index = norm_trans_ul[i][j].node - 1;
-                    const double y_u_w = y_l[c][src_index];
+                    const double w = arry[j].weight;
+                    const int src_index = arry[j].node - 1;
+                    const double y_u_w = y_l[c][node_index_v[src_index]];
                     if (y_u_w < 1.0e-200 || w < 1.0e-200) continue;
-                    y_ret[c][i] += w * y_l[c][src_index];
+                    y_ret[c][i] += w * y_l[c][node_index_v[src_index]];
                 }
             }
         }
-
-        foreach (const int i, unlabeled_nodes) {
-            const int edge_sz = norm_trans_uu[i].size();
+        // calc Y'_u = \overline{T}_{uu} Y_u
+        for (unsigned int i=0; i<unlabeled_nodes.size(); i++) {
             for (int c=0; c<C; c++) {
+                const graph::Array arry = norm_trans_uu[i];
+                const int edge_sz = arry.size();
                 for (int j=0; j<edge_sz; j++) {
-                    const double w = norm_trans_uu[i][j].weight;
-                    const int src_index = norm_trans_uu[i][j].node - 1;
-                    const double y_u_w = y_u[c][src_index];
+                    const double w = arry[j].weight;
+                    const int src_index = arry[j].node - 1;
+                    const double y_u_w = y_u[c][node_index_v[src_index]];
                     if (y_u_w < 1.0e-200 || w < 1.0e-200) continue;
-                    y_ret[c][i] += w * y_u[c][src_index];
+                    y_ret[c][i] += w * y_u[c][node_index_v[src_index]];
                 }
                 err += std::abs(y_ret[c][i] - y_u[c][i]);
             }
         }
         y_u = y_ret;
-//        LOG(INFO) << "iteration: " << iteration << " done. error: " << err << endl;
         if (FLAGS_eps > err) break;
     }
     LOG(INFO) << "iteration: " << iteration << " done." << endl;
-    showLabels(y_l, y_u, L, U, C, labeled_nodes, unlabeled_nodes, labels);
-
+    showLabels(y_l, y_u, L, U, C, labeled_nodes, unlabeled_nodes, node_index_v, labels);
 }

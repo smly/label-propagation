@@ -131,14 +131,16 @@ void load_submatrix(const Matrix& mat, Matrix& mat_uu, Matrix& mat_ul,
                     const std::vector<int> unlabeled_nodes,
                     const std::vector<int> labeled_nodes,
                     const Labels& lab) {
-    foreach (const int i, unlabeled_nodes) {
-        const int edges_sz = mat[i].size();
+//    foreach (const int i, unlabeled_nodes) {
+    for (unsigned int i=0; i<unlabeled_nodes.size(); i++) {
+        const int node_index = unlabeled_nodes[i];
+        const int edges_sz = mat[node_index].size();
         for (int j=0; j<edges_sz; j++) {
-            const int src_index = mat[i][j].node - 1;
+            const int src_index = mat[node_index][j].node - 1;
             if (lab[src_index] >= 0) {
-                mat_ul[i].push_back( mat[i][j] );
+                mat_ul[i].pb( mat[node_index][j] );
             } else {
-                mat_uu[i].push_back( mat[i][j] );
+                mat_uu[i].pb( mat[node_index][j] );
             }
         }
     }
