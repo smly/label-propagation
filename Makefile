@@ -3,7 +3,7 @@ CC   = g++
 #TARGET = dwalk
 OBJS = label_propagation.o utils.o graph.o
 TARGET = label_propagation
-LIBS = -lboost_filesystem -lglog -pthread -lgflags
+LIBS = -lboost_filesystem -pthread
 INCLUDES = -I.
 $(TARGET): $(OBJS)
 	$(CC) -o $(TARGET) $(LIBS) $(INCLUDES) $(OBJS)

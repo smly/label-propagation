@@ -5,7 +5,6 @@ namespace graph {
 
 void normalize (Matrix& trans_mat, Matrix& norm_trans_mat)
 {
-    LOG(INFO) << "start to normalize input matrix" <<  std::endl;
     const int V = trans_mat.size();
     std::vector<double> in_weight(V, 0.0);
     for (int i=0; i<V; i++) {
@@ -33,21 +32,18 @@ void normalize (Matrix& trans_mat, Matrix& norm_trans_mat)
             norm_trans_mat[dst_index].push_back(Edge(i+1, w));
         }
     }
-    LOG(INFO) << "end to normalize input matrix" << std::endl;
 }
 int load_lab (Labels& lab, const std::string& input)
 {
-    namespace fs = boost::filesystem;
     using boost::split;
     using boost::algorithm::is_space;
     using boost::algorithm::is_any_of;
     using utils::stoi;
 
-    LOG(INFO) << "start load_lab" << input << std::endl;
-    if (! fs::exists(input)) {
-        throw std::runtime_error("input file not found.");
-    }
-    fs::ifstream ifs(input);
+//    if (! fs::exists(input)) {
+//        throw std::runtime_error("input file not found.");
+//    }
+    std::ifstream ifs(input.c_str(), std::ios::in);
     lab = Labels();
     int max_label = 0;
     while (! ifs.eof()) {
@@ -62,25 +58,22 @@ int load_lab (Labels& lab, const std::string& input)
         }
         ifs.peek();
     }
-    LOG(INFO) << "end load_lab" << input << std::endl;
 
     return max_label;
 }
 void load_mat (Matrix& trans_mat, Matrix& norm_trans_mat, const std::string& input)
 {
-    namespace fs = boost::filesystem;
     using boost::split;
     using boost::algorithm::is_space;
     using boost::algorithm::is_any_of;
     using utils::stoi;
     using utils::stod;
 
-    LOG(INFO) << "start load_mat" << input << std::endl;
 
-    if (! fs::exists(input)) {
-        throw std::runtime_error("input file not found.");
-    }
-    fs::ifstream ifs(input);
+//    if (! fs::exists(input)) {
+//        throw std::runtime_error("input file not found.");
+//    }
+    std::ifstream ifs(input.c_str(), std::ios::in);
     trans_mat = Matrix();
     while (! ifs.eof()) {
         Array arry;
@@ -100,31 +93,8 @@ void load_mat (Matrix& trans_mat, Matrix& norm_trans_mat, const std::string& inp
         trans_mat.push_back(arry);
         ifs.peek();
     }
-    LOG(INFO) << "end load_mat" << input << std::endl;
     // normalize weights
     normalize(trans_mat, norm_trans_mat);
-}
-void show_normalized_trans(const Matrix& norm)
-{
-    const int N = norm.size();
-    for (int i=0; i<N; i++) {
-        LOG(INFO) << "dst.id: " << i+1 << std::endl;
-        for (unsigned int j=0; j<norm[i].size(); j++) {
-            LOG(INFO) << "-> src.id: " << norm[i][j].node
-                      <<" (" << norm[i][j].weight << ")" << std::endl;
-        }
-    }
-}
-void show_normalized_trans_u(const Matrix& norm, const int L)
-{
-    const int N = norm.size();
-    for (int i=0; i<N; i++) {
-        LOG(INFO) << "dst.id: " << i+L+1 << std::endl;
-        for (unsigned int j=0; j<norm[i].size(); j++) {
-            LOG(INFO) << "-> src.id: " << norm[i][j].node
-                      <<" (" << norm[i][j].weight << ")" << std::endl;
-        }
-    }
 }
 void load_submatrix(const Matrix& mat, Matrix& mat_uu, Matrix& mat_ul,
                     const int U, const int L,
