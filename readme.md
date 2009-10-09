@@ -13,7 +13,7 @@ hoge.
 
 ### Sample input
 
-    xiaojin$ cat sample_data7/sample.in
+    xiaojin$ cat dat/sample_data7/sample.in
     2:1 3:1
     1:1 3:1
     1:1 2:1 4:1
@@ -24,7 +24,7 @@ hoge.
     4:1 9:1
     8:1
 
-    xiaojin$ cat sample_data7/sample.label
+    xiaojin$ cat dat/sample_data7/sample.label
     ?
     1
     ?
@@ -37,7 +37,9 @@ hoge.
 
 ### Sample output
 
-    xiaojin$ ./lprop -e 1e-10 -p 9 -m 1000 -i smaple_data7/sample.in -l sample_data7/sample.label -r sample_data7/return
+    xiaojin$ ./lprop -e 1e-10 -p 9 -m 1000 -i dat/smaple_data7/sample.in \
+                 -l dat/sample_data7/sample.label \
+                 -r dat/sample_data7/return
     Number of nodes:              9
     Number of labeled nodes:      3
     Number of unlabeled nodes:    6
@@ -47,7 +49,7 @@ hoge.
     done
     iteration: 47 times, error: 7.76231e-11
 
-    xiaojin$ cat return.result
+    xiaojin$ cat dat/sample_data7/return.result
     1
     1
     1
@@ -58,7 +60,7 @@ hoge.
     2
     2
 
-    xiaojin$ cat return.weight
+    xiaojin$ cat dat/sample_data7/return.weight
     U: 0.912762520 0.087237480
     L: 1.000000000 0.000000000
     U: 0.781906300 0.218093700
