@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT(lprop, 0.01, [kohei-o@is.naist.jp])
-AC_CONFIG_SRCDIR([main.cc])
+AC_CONFIG_SRCDIR([src/main.cc])
 AC_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE(lprop, 0.01)
 
