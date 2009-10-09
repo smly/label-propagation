@@ -34,9 +34,6 @@ void normalize(Matrix& trans_mat,
 }
 int load_lab(Labels& lab,
              const std::string& input) {
-  //    if (! fs::exists(input)) {
-  //        throw std::runtime_error("input file not found.");
-  //    }
   std::ifstream ifs(input.c_str(), std::ios::in);
   lab = Labels();
   int max_label = 0;
@@ -60,9 +57,6 @@ void load_mat (Matrix& trans_mat,
                Matrix& norm_trans_mat,
                const std::string& input)
 {
-  //    if (! fs::exists(input)) {
-  //        throw std::runtime_error("input file not found.");
-  //    }
   try {
     std::ifstream ifs(input.c_str(), std::ios::in);
     trans_mat = Matrix();

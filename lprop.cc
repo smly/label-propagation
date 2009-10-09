@@ -157,7 +157,7 @@ bool LP::train (const int max_iter)
   std::cout << "eps:                          " << eps_ << std::endl;
   std::cout << "max iteration:                " << max_iter << std::endl;
 
-  for (int iter = 1; iter < max_iter; iter++) {
+  for (int iter = 1;;iter++) {
     double err = 0.0;
     std::vector<std::vector<double> > y_ret(C_, std::vector<double>(U_, 0.0));
     for (unsigned int i=0; i < U_; i++) {
@@ -189,14 +189,19 @@ bool LP::train (const int max_iter)
             y_ret[c][i]-y_u[c][i] : y_u[c][i]-y_ret[c][i];
       }
     }
-    if (iter % 400 == 1) {
+    if (iter % 2 == 1) std::cout << ".";
+    if (iter % 140 == 0) {
       std::cout << std::endl;
-      if (iter != 1) std::cout << " error: " << err << std::endl;
+      std::cout << "[iteration: " << iter << " times"
+                << ", error: " << err << "]" << std::endl;
     }
-    if (iter % 10 == 1) std::cout << ".";
     y_u = y_ret;
-    if (eps_ > err) {
-      std::cout << std::endl << iter << " iteration done." << std::endl;
+
+    if (eps_ > err || iter > max_iter-1) {
+      std::cout << std::endl << "done" << std::endl;
+      std::cout << "iteration: " << iter << " times"
+                << ", error: " << err << std::endl;
+
       break;
     }
   }
@@ -206,11 +211,67 @@ bool LP::train (const int max_iter)
 bool LP::write (const char* filename,
                 const unsigned int prec)
 {
-  //
+  //  std::ofstream ofs(filename);
+  const std::string label_filename(std::string(filename) + ".result");
+  const std::string weight_filename(std::string(filename) + ".weight");
+  std::ofstream ofs(weight_filename.c_str());
+  ofs.setf(std::ios::fixed, std::ios::floatfield);
+  ofs.precision(prec);
+  for (int i=0; i<N_; i++) {
+    if (labels[i] >= 0) {
+      ofs << "L: ";
+      for (int c=0; c<C_; c++) {
+        if (c!=0) ofs << " ";
+        ofs << y_l[c][node_index_v[i]];
+      }
+      ofs << std::endl;
+    } else {
+      ofs << "U: ";
+      for (int c=0; c<C_; c++) {
+        if (c!=0) ofs << " ";
+        ofs << y_u[c][node_index_v[i]];
+      }
+      ofs << std::endl;
+    }
+  }
+  ofs.close();
+  ofs.clear();
+  ofs.open(label_filename.c_str());
+  ofs.setf(std::ios::fixed, std::ios::floatfield);
+  ofs.precision(prec);
+  for (int i=0; i<N_; i++) {
+    int argmax = 0;
+    double argmax_val = -1.0;
+    for (int c=0; c<C_; c++) {
+      if (labels[i] >= 0) {
+        for (int c=0; c<C_; c++) {
+          if (argmax_val < y_l[c][node_index_v[i]]) {
+            argmax_val = y_l[c][node_index_v[i]];
+            argmax = c;
+          }
+        }
+      } else {
+        for (int c=0; c<C_; c++) {
+          if (argmax_val < y_u[c][node_index_v[i]]) {
+            argmax_val = y_u[c][node_index_v[i]];
+            argmax = c;
+          }
+        }
+      }
+    }
+    ofs << argmax+1 << std::endl;
+  }
+
+  ofs.close();
 }
 void LP::show (const unsigned int prec)
 {
-  std::cout << "========================================" << std::endl;
+  { // bar
+    const int kline_sz = 70;
+    std::stringstream mkline;
+    for (int i = 0; i < kline_sz; i++) mkline << "=";
+    std::cout << mkline.str() << std::endl;
+  }
   std::stringstream ss;
   ss.setf(std::ios::fixed, std::ios::floatfield);
   ss.precision(prec);
@@ -283,10 +344,10 @@ int main (int argc, char** argv)
       case 'i': input_matrix = std::string(optarg); break;
       case 'l': input_labels = std::string(optarg); break;
       case 'r': result = std::string(optarg); break;
-      case 'h': std::cout << "./lprop" << HELP << std::endl;
+      case 'h': std::cout << argv[0] << HELP << std::endl;
         return EXIT_FAILURE;
       default:
-        std::cout << "./lprop" << HELP << std::endl; return EXIT_FAILURE;
+        std::cout << argv[0] << HELP << std::endl; return EXIT_FAILURE;
     }
   }
 
@@ -304,7 +365,7 @@ int main (int argc, char** argv)
     lprop.read(input_matrix, input_labels);
     lprop.train(max_iter);
     lprop.write(argv[argc-1], prec);
-    lprop.show(prec);
+    //    lprop.show(prec);
   } catch (const std::exception& e) {
     std::cerr << "ERROR: " << e.what() << std::endl;
     return EXIT_FAILURE;

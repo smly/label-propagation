@@ -19,6 +19,7 @@ typedef struct Edge {
   Edge (int node, double weight)
   : node(node), weight(weight) {}
 } Edge;
+
 typedef std::vector<Edge> Array;
 typedef std::vector<Array> Matrix;
 typedef std::vector<int> Labels;
