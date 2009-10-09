@@ -9,8 +9,10 @@ An implementation of Label propagation ([Zhu and Ghahramani, 2002]).
 
 ### Installation
 
+    xiaojin$ wget http://github.com/smly/label-propagation/tarball/0.1.1 -O lprop-0.1.1.tar.gz
     xiaojin$ tar zxvf lprop-0.1.1.tar.gz
-    xiaojin$ cd lprop-0.1.1.tar.gz
+
+
     xiaojin$ ./autogen.sh
     xiaojin$ ./configure
     xiaojin$ make
@@ -31,6 +33,7 @@ Take it easy.
     6:1
     4:1 9:1
     8:1
+
 
     xiaojin$ cat dat/sample_data7/sample.label
     ?
@@ -57,6 +60,7 @@ Take it easy.
     done
     iteration: 47 times, error: 7.76231e-11
 
+
     xiaojin$ cat dat/sample_data7/return.result
     1
     1
@@ -67,6 +71,7 @@ Take it easy.
     2
     2
     2
+
 
     xiaojin$ cat dat/sample_data7/return.weight
     U: 0.912762520 0.087237480
