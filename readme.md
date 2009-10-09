@@ -7,9 +7,17 @@ usage
 
 An implementation of Label propagation ([Zhu and Ghahramani, 2002]).
 
+### Installation
+
+    xiaojin$ tar zxvf lprop-0.1.1.tar.gz
+    xiaojin$ cd lprop-0.1.1.tar.gz
+    xiaojin$ ./autogen.sh
+    xiaojin$ ./configure
+    xiaojin$ make
+
 ### Input format
 
-hoge.
+Take it easy.
 
 ### Sample input
 
@@ -70,3 +78,7 @@ hoge.
     U: 0.000000000 1.000000000
     U: 0.064620355 0.935379645
     L: 0.000000000 1.000000000
+
+### Author
+
+Kohei Ozaki (eowner@gmail.com)
