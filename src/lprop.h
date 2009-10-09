@@ -12,8 +12,8 @@ namespace ssl_lprop {
 
 class LP {
  public:
-  LP () : eps_(1.0e-9), N_(0), L_(0), U_(0) {};
-  explicit LP (double eps) : eps_(eps), N_(0), L_(0), U_(0) {};
+  LP () : N_(0), L_(0), U_(0), eps_(1.0e-9) {};
+  explicit LP (double eps) : N_(0), L_(0), U_(0), eps_(eps) {};
   ~LP () { clear(); }
 
   void clear();

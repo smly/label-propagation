@@ -204,6 +204,8 @@ bool LP::write (const char* filename,
   }
 
   ofs.close();
+
+  return true;
 }
 void LP::show (const unsigned int prec)
 {
