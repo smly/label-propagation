@@ -1,5 +1,5 @@
 CC   = g++
-OBJS = lprop.o graph.o
+OBJS = main.o lprop.o graph.o
 TARGET = lprop
 LIBS = -pthread
 INCLUDES = -I.
