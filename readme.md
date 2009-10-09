@@ -9,8 +9,8 @@ An implementation of Label propagation ([Zhu and Ghahramani, 2002]).
 
 ### Installation
 
-    xiaojin$ wget http://github.com/smly/label-propagation/tarball/0.1.1 -O lprop-0.1.1.tar.gz
-    xiaojin$ tar zxvf lprop-0.1.1.tar.gz
+    xiaojin$ wget http://github.com/smly/label-propagation/tarball/0.1.2 -O lprop-0.1.2.tar.gz
+    xiaojin$ tar zxvf lprop-0.1.2.tar.gz
 
 
     xiaojin$ ./autogen.sh
