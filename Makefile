@@ -1,9 +1,7 @@
 CC   = g++
-#OBJS = dwalk.o utils.o graph.o
-#TARGET = dwalk
-OBJS = label_propagation.o utils.o graph.o
-TARGET = label_propagation
-LIBS = -lboost_filesystem -pthread
+OBJS = lprop.o graph.o
+TARGET = lprop
+LIBS = -pthread
 INCLUDES = -I.
 $(TARGET): $(OBJS)
 	$(CC) -o $(TARGET) $(LIBS) $(INCLUDES) $(OBJS)
