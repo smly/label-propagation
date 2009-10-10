@@ -1,40 +1,26 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.59)
-AC_INIT(lprop, 0.01, [kohei-o@is.naist.jp])
+AC_PREREQ([2.64])
+AC_INIT(lprop, 0.1.3, [kohei-o@is.naist.jp])
 AC_CONFIG_SRCDIR([src/main.cc])
-AC_CONFIG_HEADER([config.h])
-AM_INIT_AUTOMAKE(lprop, 0.01)
+AC_CONFIG_AUX_DIR([config])
+AM_INIT_AUTOMAKE([foreign 1.8.3])
 
 # Checks for programs.
 AC_PROG_CXX
+AC_PROG_CC
 
 # Checks for libraries.
-AC_PROG_LIBTOOL
 
 # Checks for header files.
-# AC_CHECK_HEADERS([memory.h sys/types.h sys/stat.h])
+AC_CHECK_HEADERS([unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
-AC_C_CONST
-AC_C_INLINE
-AC_TYPE_SIZE_T
 
 # Checks for library functions.
-AC_HEADER_STDC
-AC_FUNC_SELECT_ARGTYPES
-# AC_CHECK_FUNCS([memset select])
 
-# Default Compiler Option
-if test x$CC = xgcc; then
-  CFLAGS="$CFLAGS -Wall -Wformat=2 -pipe -Wno-sign-compare -D_FORTIFY_SOURCE=1 -Wcast-qual -Wcast-align -Wpointer-arith -Wwrite-strings"
-fi
-
-if test x$CXX = xg++; then
-  CPPFLAGS="$CPPFLAGS -Wall -Wformat=2 -pipe -Wno-sign-compare -D_FORTIFY_SOURCE=1 -Wcast-qual -Wcast-align -Wpointer-arith -Wwrite-strings -Woverloaded-virtual"
-fi
-
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile
+                 src/Makefile])
 AC_OUTPUT
