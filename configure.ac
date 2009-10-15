@@ -1,7 +1,8 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.64])
+#AC_PREREQ([2.64])
+AC_PREREQ([2.50])
 AC_INIT(lprop, 0.1.3, [kohei-o@is.naist.jp])
 AC_CONFIG_SRCDIR([src/main.cc])
 AC_CONFIG_AUX_DIR([config])
