@@ -11,7 +11,7 @@ An implementation of Label propagation ([Zhu and Ghahramani, 2002]).
 
     xiaojin$ git clone git://github.com/smly/label-propagation.git
     xiaojin$ cd label-propagation
-    xiaojin$ ./configure
+    xiaojin$ ./configure --prefix=$HOME
     xiaojin$ make
 
 ### Input format
@@ -45,7 +45,7 @@ Take it easy.
 
 ### Sample output
 
-    xiaojin$ ./src/lprop -e 1e-10 -p 9 -m 1000 -i dat/smaple_data7/sample.in \
+    xiaojin$ lprop -e 1e-10 -p 9 -m 1000 -i dat/smaple_data7/sample.in \
                  -l dat/sample_data7/sample.label \
                  -r dat/sample_data7/return
     Number of nodes:              9
