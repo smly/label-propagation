@@ -45,7 +45,7 @@ Take it easy.
 
 ### Sample output
 
-    xiaojin$ ./lprop -e 1e-10 -p 9 -m 1000 -i dat/smaple_data7/sample.in \
+    xiaojin$ ./src/lprop -e 1e-10 -p 9 -m 1000 -i dat/smaple_data7/sample.in \
                  -l dat/sample_data7/sample.label \
                  -r dat/sample_data7/return
     Number of nodes:              9
