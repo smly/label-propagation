@@ -81,6 +81,10 @@ Take it easy.
     U: 0.064620355 0.935379645
     L: 0.000000000 1.000000000
 
+### License
+
+BSE3 License
+
 ### Author
 
 Kohei Ozaki (eowner@gmail.com)
