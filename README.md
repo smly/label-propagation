@@ -27,7 +27,7 @@ Take it easy.
     3:1 5:1 8:1
     4:1 6:1
     5:1 7:1
-    6:1
+    5:1 6:1
     4:1 9:1
     8:1
 
@@ -80,6 +80,8 @@ Take it easy.
     U: 0.000000000 1.000000000
     U: 0.064620355 0.935379645
     L: 0.000000000 1.000000000
+
+### Output Visualization
 
 ![graph7](http://github.com/smly/label-propagation/raw/master/dat/ss.png)
 
