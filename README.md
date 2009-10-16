@@ -81,7 +81,7 @@ Take it easy.
     U: 0.064620355 0.935379645
     L: 0.000000000 1.000000000
 
-![graph7](http://github.com/smly/sys35tools/raw/master/dat/ss.png)
+![graph7](http://github.com/smly/label-propagation/raw/master/dat/ss.png)
 
 ### License
 
