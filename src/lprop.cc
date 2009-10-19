@@ -17,7 +17,8 @@ bool LP::read (const std::string mfilename,
     return false;
   }
   assert(trans.size() == labels.size());
-  N_ = trans.size();
+  assert(trans.size() == norm.size());
+  N_ = norm.size();
   L_ = 0;
   std::vector<int> unlabeled;
   for (int i=0; i<N_; i++) {
@@ -207,6 +208,7 @@ bool LP::write (const char* filename,
 
   return true;
 }
+/*
 void LP::show (const unsigned int prec)
 {
   { // bar
@@ -265,5 +267,6 @@ void LP::show (const unsigned int prec)
 
   std::cout << ss.str();
 }
+*/
 
 } // end of graph namespace

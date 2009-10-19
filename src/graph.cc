@@ -32,6 +32,47 @@ void normalize(Matrix& trans_mat,
     }
   }
 }
+void load_mat (Matrix& trans_mat,
+               Matrix& norm_trans_mat,
+               const std::string& input)
+{
+  try {
+    std::ifstream ifs(input.c_str(), std::ios::in);
+    trans_mat = Matrix();
+    while (! ifs.eof()) {
+      std::string line;
+      std::getline(ifs, line);
+      const char *s = line.c_str();
+      unsigned int elemnum = 0;
+      unsigned int len = strlen(s);
+      unsigned int pos = 0;
+      for (unsigned int i = 0; i < len; i++) {
+        if (s[i] == ':') elemnum++;
+      }
+      Array arry(elemnum, Edge());
+      //      double tmp = 0.0;
+      for (int i = 0; i < elemnum; i++) {
+        int dst;
+        double w;
+        while (pos < len && isspace(s[pos])) pos++; // skip
+        dst = atoi(s + pos);
+        while (pos + 1 < len && s[pos] != ':') pos++;
+        w = atof(s + pos + 1);
+        while (pos < len && !isspace(s[pos])) pos++;
+        arry[i] = Edge(dst, w);
+        //        tmp += w;
+      }
+      trans_mat.push_back(arry);
+      ifs.peek();
+    }
+  } catch (const std::exception& e) {
+    std::stringstream ss;
+    ss << "load_mat() says: " << e.what();
+    throw std::runtime_error (ss.str());
+  }
+  // normalize weights
+  normalize(trans_mat, norm_trans_mat);
+}
 int load_lab(Labels& lab,
              const std::string& input) {
   std::ifstream ifs(input.c_str(), std::ios::in);
@@ -52,45 +93,6 @@ int load_lab(Labels& lab,
   }
 
   return max_label;
-}
-void load_mat (Matrix& trans_mat,
-               Matrix& norm_trans_mat,
-               const std::string& input)
-{
-  try {
-    std::ifstream ifs(input.c_str(), std::ios::in);
-    trans_mat = Matrix();
-    while (! ifs.eof()) {
-      std::string line;
-      std::getline(ifs, line);
-      const char *s = line.c_str();
-      unsigned int elemnum = 0;
-      unsigned int len = strlen(s);
-      unsigned int pos = 0;
-      for (unsigned int i = 0; i < len; i++) {
-        if (s[i] == ':') elemnum++;
-      }
-      Array arry(elemnum, Edge());
-      for (int i = 0; i < elemnum; i++) {
-        int dst;
-        double w;
-        while (pos < len && isspace(s[pos])) pos++; // skip
-        dst = atoi(s + pos);
-        while (pos + 1 < len && s[pos] != ':') pos++;
-        w = atof(s + pos + 1);
-        while (pos < len && !isspace(s[pos])) pos++;
-        arry[i] = Edge(dst, w);
-      }
-      trans_mat.push_back(arry);
-      ifs.peek();
-    }
-  } catch (const std::exception& e) {
-    std::stringstream ss;
-    ss << "load_mat() says: " << e.what();
-    throw std::runtime_error (ss.str());
-  }
-  // normalize weights
-  normalize(trans_mat, norm_trans_mat);
 }
 void load_submatrix(const Matrix& mat,
                     Matrix& mat_uu,

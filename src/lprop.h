@@ -22,7 +22,7 @@ class LP {
   bool train(const int max_iter);
   bool write(const char* filename,
              const unsigned int prec);
-  void show(const unsigned int prec);
+  //  void show(const unsigned int prec);
 
  private:
   unsigned int N_; // size of nodes
