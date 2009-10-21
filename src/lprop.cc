@@ -18,6 +18,8 @@ bool LP::read (const std::string mfilename,
   }
   assert(trans.size() == labels.size());
   assert(trans.size() == norm.size());
+  // todo: delete trans
+
   N_ = norm.size();
   L_ = 0;
   std::vector<int> unlabeled;
@@ -93,15 +95,17 @@ bool LP::train (const int max_iter)
     throw std::runtime_error (ss.str());
   }
 
-  std::cout << "Number of nodes:              " << N_ << std::endl;
-  std::cout << "Number of labeled nodes:      " << L_ << std::endl;
-  std::cout << "Number of unlabeled nodes:    " << U_ << std::endl;
-  std::cout << "eps:                          " << eps_ << std::endl;
-  std::cout << "max iteration:                " << max_iter << std::endl;
+  std::cout << "Number of nodes:            " << N_ << std::endl;
+  std::cout << "Number of labeled nodes:    " << L_ << std::endl;
+  std::cout << "Number of unlabeled nodes:  " << U_ << std::endl;
+  std::cout << "eps:                        " << eps_ << std::endl;
+  std::cout << "max iteration:              " << max_iter
+            << std::endl;
 
   for (int iter = 1;;iter++) {
     double err = 0.0;
-    std::vector<std::vector<double> > y_ret(C_, std::vector<double>(U_, 0.0));
+    std::vector<std::vector<double> > y_ret
+        (C_, std::vector<double>(U_, 0.0));
     for (unsigned int i=0; i < U_; i++) {
       for (unsigned int c=0; c<C_; c++) {
         const ssl_lprop::Array arry = norm_ul[i];

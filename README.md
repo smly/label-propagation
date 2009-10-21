@@ -16,7 +16,7 @@ An implementation of Label propagation ([Zhu and Ghahramani, 2002]).
 
 ### Input format
 
-Take it easy.
+Take it easy. A symmetry affinity matrix is required.
 
 ### Sample input
 
