@@ -86,7 +86,7 @@ Take it easy.
 
 ### License
 
-BSE3 License
+BSD3 License
 
 ### Author
 
